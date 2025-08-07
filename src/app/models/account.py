@@ -9,7 +9,7 @@ from app.models.core import TimestampedModel
 class Account(TimestampedModel, table=True):
     __tablename__ = 'accounts'
 
-    transactions: t.Optional['Transaction'] = Relationship(back_populates='account')
+    transactions: list[t.Optional['Transaction']] = Relationship(back_populates='account')
 
     balance: float
 
