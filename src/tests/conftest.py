@@ -6,15 +6,11 @@ import sqlalchemy as sa
 from dotenv import find_dotenv, load_dotenv
 from faker import Faker
 from fastapi.testclient import TestClient
-from sqlalchemy import orm
 
 from app import create_app
 from app.cli import CreateDatabaseCli
 from app.models.core import BaseMixin
-from database import SQLDatabase
-
-sql_db = SQLDatabase(db_url=os.getenv('SQLALCHEMY_DATABASE_URI'))
-session = orm.scoped_session(sql_db.sessionmaker)
+from database import session
 
 faker = Faker()
 
