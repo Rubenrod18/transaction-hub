@@ -40,7 +40,7 @@ class GetMixin(BaseRepository, GetRepository):
     def get(self, **kwargs) -> list[SQLModel]:
         page_number = int(kwargs.get('page_number', 1)) - 1
         items_per_page = int(kwargs.get('items_per_page', 10))
-        order = [self.model.created_at.asc()]
+        order = kwargs.get('order', [self.model.created_at.asc()])
 
         with self.session() as session:
             return list(
