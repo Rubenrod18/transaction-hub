@@ -7,3 +7,9 @@ class TestBaseIntegration:
     def integration_setup(self, app, faker):
         self.app = app
         self.faker = faker
+
+
+class TestCliBaseIntegration(TestBaseIntegration):
+    @pytest.fixture(autouse=True)
+    def cli_integration_setup(self, runner):
+        self.runner = runner

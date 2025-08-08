@@ -3,6 +3,7 @@ from uuid import UUID
 
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends
+from starlette import status
 
 from app.di_container import ServiceDIContainer
 from app.exceptions import NotFoundException
@@ -16,6 +17,7 @@ router = APIRouter(prefix='/transactions', tags=['transactions'])
 @router.post(
     '/',
     summary='Creates a new transaction',
+    status_code=status.HTTP_201_CREATED,
     response_model=transaction_schemas.TransactionSchema,
     responses={
         201: {
