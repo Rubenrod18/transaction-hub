@@ -3,9 +3,9 @@ from uuid import UUID
 
 import pytest
 
-from app.models import Transaction
+from app.models import Account, Transaction
+from database import session
 from tests.common.base_tests.test_base_integration import TestBaseIntegration
-from tests.common.factories.account_factory import AccountFactory
 from tests.common.factories.transaction_factory import TransactionFactory
 from tests.conftest import faker
 
@@ -28,7 +28,10 @@ class TestAccountModel(TestBaseIntegration):
         elif transaction_factory:
             account_data.update({'transactions': [transaction_factory()]})
 
-        account = AccountFactory(deleted_at=None, **account_data)
+        account = Account(deleted_at=None, **account_data)
+        session.add(account)
+        session.flush()
+        session.commit()
 
         assert isinstance(account.id, UUID)
         assert isinstance(account.balance, float)
