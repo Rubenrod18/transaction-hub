@@ -58,6 +58,3 @@ def get_seeders() -> dict:
 
     seeder_modules = get_seeder_modules()
     return get_seeder_instances(seeder_modules)
-
-
-SEEDERS = get_seeders()

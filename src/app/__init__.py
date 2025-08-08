@@ -2,11 +2,11 @@ from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 
 from app.openpi_examples import examples as component_examples
-from app.routers import ROUTERS
+from app.routers import get_routers
 
 
 def _register_routers(app: FastAPI) -> None:
-    for router in ROUTERS:
+    for router in get_routers():
         app.include_router(router)
 
 

@@ -32,6 +32,3 @@ def get_routers() -> list:
 
     router_modules = get_router_modules()
     return get_router_instances(router_modules)
-
-
-ROUTERS = get_routers()

@@ -6,15 +6,11 @@ import sqlalchemy as sa
 from dotenv import find_dotenv, load_dotenv
 from faker import Faker
 from fastapi.testclient import TestClient
-from sqlalchemy import orm
 
 from app import create_app
 from app.cli import CreateDatabaseCli
 from app.models.core import BaseMixin
-from database import SQLDatabase
-
-sql_db = SQLDatabase(db_url=os.getenv('SQLALCHEMY_DATABASE_URI'))
-session = orm.scoped_session(sql_db.sessionmaker)
+from database import session
 
 faker = Faker()
 
@@ -29,14 +25,12 @@ def setup_database():
     def create_new_sqlalchemy_session() -> tuple[str, sa.Engine]:
         test_db_uri = f'{os.environ["SQLALCHEMY_DATABASE_URI"]}_{uuid.uuid4().hex}'
         test_engine = sa.create_engine(test_db_uri)
-        session.remove()
         session.configure(bind=test_engine)
         original_db_uri = os.environ['SQLALCHEMY_DATABASE_URI']
-        os.environ['SQLALCHEMY_DATABASE_URI'] = test_db_uri
-        return original_db_uri, test_engine
+        return original_db_uri, test_engine, test_db_uri
 
-    def create_db(engine: sa.Engine):
-        seeder_cli = CreateDatabaseCli(db_uri=os.environ['SQLALCHEMY_DATABASE_URI'])
+    def create_db(engine: sa.Engine, test_db_uri: str):
+        seeder_cli = CreateDatabaseCli(db_uri=test_db_uri)
         seeder_cli.run_command()
 
         with engine.begin() as conn:
@@ -60,10 +54,11 @@ def setup_database():
                 conn.execute(sa.text(f'DROP DATABASE IF EXISTS "{db_name_to_drop}"'))
                 print(f"Database '{db_name_to_drop}' dropped successfully.")  # noqa
         finally:
+            session.remove()
             neutral_engine.dispose()
 
-    db_uri, sa_engine = create_new_sqlalchemy_session()
-    create_db(sa_engine)
+    db_uri, sa_engine, test_db_uri = create_new_sqlalchemy_session()
+    create_db(sa_engine, test_db_uri)
     yield
     drop_db(sa_engine)
     os.environ['SQLALCHEMY_DATABASE_URI'] = db_uri

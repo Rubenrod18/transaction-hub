@@ -1,4 +1,5 @@
 import logging
+import os
 from collections.abc import Callable
 from contextlib import AbstractContextManager, contextmanager
 
@@ -38,3 +39,8 @@ class SQLDatabase:
             raise
         finally:
             session.close()
+
+
+# HACK: Think about other place
+sql_db = SQLDatabase(db_url=os.getenv('SQLALCHEMY_DATABASE_URI'))
+session = orm.scoped_session(sql_db.sessionmaker)
