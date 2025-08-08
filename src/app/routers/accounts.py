@@ -2,7 +2,7 @@ from typing import Annotated
 from uuid import UUID
 
 from dependency_injector.wiring import inject, Provide
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 
 from app.di_container import ServiceDIContainer
 from app.exceptions import NotFoundException
@@ -34,8 +34,10 @@ router = APIRouter(prefix='/accounts', tags=['accounts'])
 @inject
 def get_account_list(
     account_service: Annotated[AccountService, Depends(Provide[ServiceDIContainer.account_service])],
+    page_number: int = Query(1, ge=1),
+    items_per_page: int = Query(10, ge=1, le=20),
 ) -> list[Account]:
-    return account_service.get()
+    return account_service.get(page_number=page_number, items_per_page=items_per_page)
 
 
 @router.get(

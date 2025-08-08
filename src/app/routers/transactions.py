@@ -2,7 +2,7 @@ from typing import Annotated
 from uuid import UUID
 
 from dependency_injector.wiring import inject, Provide
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from starlette import status
 
 from app.di_container import ServiceDIContainer
@@ -72,8 +72,10 @@ def create_transaction(
 @inject
 def get_transaction_list(
     transaction_service: Annotated[TransactionService, Depends(Provide[ServiceDIContainer.transaction_service])],
+    page_number: int = Query(1, ge=1),
+    items_per_page: int = Query(10, ge=1, le=20),
 ) -> list[Transaction]:
-    return transaction_service.get()
+    return transaction_service.get(page_number=page_number, items_per_page=items_per_page)
 
 
 @router.get(
