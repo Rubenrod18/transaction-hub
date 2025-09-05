@@ -39,7 +39,7 @@ jobs:
             echo "Updates found for pre-commit hooks."
           fi
 
-          $PRE_COMMIT_VERSION=$(grep -A1 "https://github.com/pre-commit/pre-commit-hooks" .pre-commit-config.yaml | grep "rev:" | awk '{print $2}')
+          PRE_COMMIT_VERSION=$(grep -A1 "https://github.com/pre-commit/pre-commit-hooks" .pre-commit-config.yaml | grep "rev:" | awk '{print $2}')
           echo "Updated pre-comit version: $PRE_COMMIT_VERSION"
           echo "pre_commit_version=$PRE_COMMIT_VERSION" >> $GITHUB_ENV
 
